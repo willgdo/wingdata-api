@@ -7,10 +7,17 @@ export async function aircraftRoutes(app: FastifyInstance) {
       registration: string;
     };
 
+    if (registration.length < 5) {
+      return reply.status(400).send({
+        message: "Invalid aircraft registration",
+      });
+    }
+
     const aircraft = await findAircraftByRegistration(registration);
 
     if (!aircraft) {
       return reply.status(404).send({
+        error: "NOT_FOUND",
         message: "Aircraft not found",
       });
     }

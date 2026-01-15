@@ -1,20 +1,15 @@
-import { fetchAnacAircrafts } from '../providers/anac.provider'
-import { Aircraft } from '../types/aircraft'
+import { fetchAnacAircrafts } from "../providers/anac.provider";
+import { normalizeRegistration } from "../utils/normalizeRegistration";
 
-export async function findAircraftByRegistration(
-  registration: string
-): Promise<Aircraft | null> {
-  const normalizedReg = registration.toUpperCase()
+export async function findAircraftByRegistration(registration: string) {
+  const normalizedReg = normalizeRegistration(registration);
 
-  const data = await fetchAnacAircrafts()
+  const data = await fetchAnacAircrafts();
 
-  const found = data.find(
-    (item: any) =>
-      item.MARCA?.toUpperCase() === normalizedReg
-  )
+  const found = data?.find((item: any) => item.MARCA === normalizedReg);
 
   if (!found) {
-    return null
+    return null;
   }
 
   return {
@@ -22,7 +17,7 @@ export async function findAircraftByRegistration(
     manufacturer: found.NMFABRICANTE,
     model: found.DSMODELO,
     operator: found.NMOPERADOR,
-    status: found.DTCANC ? 'Cancelled' : 'Active',
-    source: 'ANAC'
-  }
+    status: found.DTCANC ? "Cancelled" : "Active",
+    source: "ANAC",
+  };
 }
